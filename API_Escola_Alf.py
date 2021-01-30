@@ -14,9 +14,9 @@ def cadastro_alunos():
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
-    cursor.execute("DELETE FROM respostas")
-    cursor.execute("DELETE FROM alunos")
-    cursor.execute("CREATE TABLE IF NOT EXISTS alunos (id_aluno integer not null check(id_aluno between 1 AND 100) PRIMARY KEY, aluno text not null)")
+    cursor.execute("DROP TABLE IF EXISTS respostas")
+    cursor.execute("DROP TABLE IF EXISTS alunos")
+    cursor.execute("CREATE TABLE alunos (id_aluno integer not null check(id_aluno between 1 AND 100) PRIMARY KEY, aluno text not null)")
 
     try:
 
@@ -98,7 +98,8 @@ def cadastro_gabaritos():
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
-    cursor.execute("DELETE FROM gabaritos")
+    cursor.execute("DROP TABLE IF EXISTS respostas")
+    cursor.execute("DROP TABLE IF EXISTS gabaritos")
     cursor.execute("CREATE TABLE IF NOT EXISTS gabaritos (prova integer not null, questao integer not null, resposta text not null, peso integer not null, PRIMARY KEY(prova, questao))")
 
     try:
@@ -163,9 +164,9 @@ def cadastro_respostas(id_aluno):
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
-    cursor.execute("DELETE FROM respostas WHERE id_aluno = " + str(id_aluno))
     cursor.execute("CREATE TABLE IF NOT EXISTS respostas (id_aluno integer not null, prova integer not null, questao integer not null, resposta text not null, PRIMARY KEY (id_aluno, prova, questao), FOREIGN KEY (prova, questao) REFERENCES gabaritos (prova, questao), FOREIGN KEY (id_aluno) REFERENCES alunos (id_aluno))")
-
+    cursor.execute("DELETE FROM respostas WHERE id_aluno = " + str(id_aluno))
+    
     try:
 
         cursor.execute("select * from gabaritos ORDER BY prova, questao")
