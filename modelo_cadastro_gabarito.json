@@ -2,8 +2,8 @@
     {
         "prova": 1, 
         "questao": 1, 
-        "alter_correta": "a",
-        "peso": 1
+        "alter_correta": "b",
+        "peso": 3
     },
     {
         "prova": 1, 
@@ -20,37 +20,43 @@
     {
         "prova": 1, 
         "questao": 4, 
+        "alter_correta": "d",
+        "peso": 4
+    },
+    {
+        "prova": 1, 
+        "questao": 5, 
         "alter_correta": "d",
         "peso": 4
     },
     {
         "prova": 2, 
         "questao": 1, 
-        "alter_correta": "d",
-        "peso": 4
-    },
-    {
-        "prova": 2, 
-        "questao": 2, 
         "alter_correta": "c",
         "peso": 3
     },
     {
         "prova": 2, 
-        "questao": 3, 
+        "questao": 2, 
         "alter_correta": "b",
         "peso": 2
     },
     {
         "prova": 2, 
-        "questao": 4, 
+        "questao": 3, 
         "alter_correta": "a",
         "peso": 1
     },
     {
         "prova": 2, 
-        "questao": 5, 
+        "questao": 4, 
         "alter_correta": "d",
         "peso": 4
+    },
+    {
+        "prova": 2, 
+        "questao": 5, 
+        "alter_correta": "b",
+        "peso": 2
     }
 ]

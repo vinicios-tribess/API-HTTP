@@ -1,10 +1,9 @@
 from flask import Flask, request
+from collections import OrderedDict
+from itertools import zip_longest
 import json
 import math
 import sqlite3
-from collections import OrderedDict
-from itertools import zip_longest
-from teste2 import analisar, analisar2, truncate
 
 app = Flask("Escola_Alf")
 
@@ -15,7 +14,8 @@ def cadastro_alunos():
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
-    cursor.execute("DROP TABLE IF EXISTS alunos")
+    cursor.execute("DELETE FROM respostas")
+    cursor.execute("DELETE FROM alunos")
     cursor.execute("CREATE TABLE IF NOT EXISTS alunos (id_aluno integer not null check(id_aluno between 1 AND 100) PRIMARY KEY, aluno text not null)")
 
     try:
@@ -24,6 +24,14 @@ def cadastro_alunos():
         for item in range(0, len(body)):
             x = tuple(body[item].values())
             lista_alunos.append(x[0])
+
+            def analisar(N):
+                for i in N:
+                    if 1 <= i <= 100:
+                        lista = []
+                        lista.append(i)
+                    else:
+                        return False
 
         if analisar(lista_alunos) == None:
             
@@ -90,7 +98,7 @@ def cadastro_gabaritos():
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
-    cursor.execute("DROP TABLE IF EXISTS gabaritos")
+    cursor.execute("DELETE FROM gabaritos")
     cursor.execute("CREATE TABLE IF NOT EXISTS gabaritos (prova integer not null, questao integer not null, resposta text not null, peso integer not null, PRIMARY KEY(prova, questao))")
 
     try:
@@ -142,7 +150,7 @@ def consulta_gabaritos():
 
         banco.close()
 
-        mensagem = {"status": 500, "mensagem": "Ops! Algo deu errado."}
+        mensagem = {"status": 500, "mensagem": "Ops! Algo deu errado. Verifique os dados e tente novamente."}
 
         mensagem = json.dumps(mensagem, indent=3)
 
@@ -155,6 +163,7 @@ def cadastro_respostas(id_aluno):
     banco = sqlite3.connect('Escola_Alf.db')
     cursor = banco.cursor()
 
+    cursor.execute("DELETE FROM respostas WHERE id_aluno = " + str(id_aluno))
     cursor.execute("CREATE TABLE IF NOT EXISTS respostas (id_aluno integer not null, prova integer not null, questao integer not null, resposta text not null, PRIMARY KEY (id_aluno, prova, questao), FOREIGN KEY (prova, questao) REFERENCES gabaritos (prova, questao), FOREIGN KEY (id_aluno) REFERENCES alunos (id_aluno))")
 
     try:
@@ -174,6 +183,14 @@ def cadastro_respostas(id_aluno):
         for c in dados:
             x = c[0]
             lista_IDs.append(x)
+
+        def analisar2(na, x):
+            for i in range(0, len(na)):
+                if x != na[i]:
+                    lista = []
+                    lista.append(i)
+                else:
+                    return False
 
         if analisar2(lista_IDs, id_aluno) == False and len(body) == len(lista_questoes):
 
@@ -333,6 +350,10 @@ def consulta_notas_finais():
                         lista4.append(0)
 
                 soma_dos_pesos = sum(lista4)
+
+                def truncate(number, digits) -> float:
+                    stepper = pow(10.0, digits)
+                    return math.trunc(stepper * number) / stepper
 
                 nota = round(float(truncate((soma_dos_pesos / sum(lista2)), 2) * 10), 2)
 
